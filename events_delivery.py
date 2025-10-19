@@ -3,6 +3,10 @@ from zoneinfo import ZoneInfo
 from flask import Flask, jsonify, send_from_directory
 import all_events_fetcher
 
+
+#RUN THIS!
+
+
 # 1. Initialize the Flask App
 app = Flask(__name__)
 
