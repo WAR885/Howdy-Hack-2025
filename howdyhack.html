@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aggie Traditions & Calendar 🤠 | A Quick Guide</title>
+    <style>
+        /* CSS is embedded here (No changes to CSS) */
+        :root {
+            --maroon: #500000;
+            --white: #ffffff;
+            --light-gray: #f1f1f1;
+            --dark-gray: #333;
+            --font-family: system-ui, sans-serif;
+            --game-background: #ececec;
+        }
+
+        /* Background Updated to Maroon and White Pixel Art Checkerboard */
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            min-height: 100vh;
+            color: #1a1a1a;
+            
+            /* Maroon and White Pixel Art Pattern */
+            background-color: var(--white); /* Fallback */
+            background-image: 
+                linear-gradient(45deg, var(--maroon) 25%, transparent 25%, transparent 75%, var(--maroon) 75%, var(--maroon)),
+                linear-gradient(45deg, var(--maroon) 25%, transparent 25%, transparent 75%, var(--maroon) 75%, var(--maroon));
+            background-size: 20px 20px; /* Size of one 'pixel block' */
+            background-position: 0 0, 10px 10px; /* Offset for checkerboard effect */
+            background-repeat: repeat;
+        }
+
+        /* The ::before overlay was removed to make the background visible */
+
+        .wrap {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header styling */
+        .site-header {
+            text-align: center;
+            padding: 2rem 1rem;
+            background-color: rgba(255, 255, 255, 0.98); /* Readability bg */
+            border-radius: 10px;
+            margin: 1rem auto;
+            max-width: 800px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: relative; /* For the new counter */
+        }
+
+        /* --- NEW: Spirit Score Counter --- */
+        .tradition-score-counter {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            background-color: var(--maroon);
+            color: var(--white);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        @media (max-width: 600px) {
+            .tradition-score-counter {
+                position: static;
+                display: inline-block;
+                margin-bottom: 1rem;
+            }
+        }
+        /* --- END NEW STYLES --- */
+
+        /* Brand & tagline */
+        .brand {
+            color: var(--maroon);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            margin-top: 0; /* Adjusted for new counter */
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--dark-gray);
+            margin-top: 0;
+        }
+
+        /* Official link */
+        .official-link a {
+            color: var(--maroon);
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .official-link a:hover {
+            color: #800000;
+        }
+
+        /* Drop-down menu */
+        .menu {
+            position: relative;
+            display: inline-block;
+            margin-top: 1.5rem;
+        }
+
+        .menu-btn {
+            background-color: var(--maroon);
+            color: var(--white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+            margin: 0 0.5rem; 
+        }
+
+        .menu-btn:hover {
+            background-color: #800000;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            background-color: var(--white);
+            min-width: 180px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 10;
+            border-radius: 5px;
+            margin-top: 0.5rem;
+            list-style: none;
+            padding: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .dropdown li a {
+            color: var(--maroon);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.2s;
+            font-weight: 500;
+        }
+
+        .dropdown li a:hover {
+            background-color: var(--light-gray);
+        }
+
+        /* Show dropdown on button click - Toggled by JavaScript */
+        .menu.show .dropdown {
+            display: block;
+        }
+
+        /* Main Content Styling */
+        main {
+            padding: 2rem 0;
+        }
+
+        .tradition-section {
+            background-color: rgba(255, 255, 255, 0.98); /* Readability bg */
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: relative; /* For the attendance badge */
+        }
+
+        .tradition-section h2 {
+            color: var(--maroon);
+            border-bottom: 3px solid var(--maroon);
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        /* --- ATTENDANCE TRACKER & CALENDAR LINK STYLES --- */
+        .tradition-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        
+        .attendance-tracker {
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            border: 2px solid var(--maroon);
+            border-radius: 5px;
+            background-color: var(--light-gray);
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--maroon);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        /* --- NEW: Verifying State --- */
+        .attendance-tracker.verifying {
+            background-color: #f0e68c; /* Khaki */
+            color: var(--dark-gray);
+            cursor: wait;
+        }
+
+        .attendance-tracker input[type="checkbox"] {
+            opacity: 0;
+            position: absolute;
+            pointer-events: none; /* Let the label handle all clicks */
+        }
+
+        .attendance-tracker span {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--maroon);
+            border-radius: 3px;
+            background-color: var(--white);
+            margin-right: 8px;
+            line-height: 1;
+            text-align: center;
+            color: var(--white);
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        /* State when checked */
+        .attendance-tracker input[type="checkbox"]:checked + span {
+            background-color: var(--maroon);
+            border-color: var(--maroon);
+        }
+
+        .tradition-section.attended .attendance-tracker {
+            background-color: var(--maroon);
+            color: var(--white);
+            border-color: var(--white);
+        }
+
+        /* New Calendar Button Style */
+        .calendar-link-btn {
+            display: none; 
+            background-color: #008000; /* Green for Google Calendar */
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+        .calendar-link-btn:hover {
+            background-color: #006400;
+        }
+        .tradition-section:not(.attended) .calendar-link-btn {
+            display: block; 
+        }
+
+        /* Responsive adjustments for controls */
+        @media (max-width: 600px) {
+            .tradition-controls {
+                position: static;
+                flex-direction: row;
+                justify-content: space-around;
+                margin-top: 10px;
+                padding-top: 10px;
+                border-top: 1px dashed var(--light-gray);
+            }
+        }
+        /* --- END ATTENDANCE TRACKER & CALENDAR LINK STYLES --- */
+        
+        /* Calendar specific styles */
+        #calendar-data {
+            border: 2px solid var(--maroon);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            background-color: var(--light-gray);
+        }
+
+        #calendar-data p strong {
+            display: inline-block;
+            min-width: 120px;
+            color: var(--maroon);
+        }
+
+        /* Countdown Box Styles */
+        #yell-countdown-box {
+            text-align: center;
+            padding: 1rem 0;
+            border-radius: 5px;
+            margin-top: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--maroon);
+            background-color: var(--light-gray);
+            border: 3px dashed var(--maroon);
+        }
+        #yell-countdown-box.live {
+            background-color: #800000; 
+            color: var(--white);
+            border: 3px solid var(--white);
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+            to { box-shadow: 0 0 10px 10px rgba(255, 255, 255, 0); }
+        }
+
+        /* --- REVEILLE OFFLINE GAME STYLES --- */
+        #offline-game-section {
+            display: none; 
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 1rem auto;
+            max-width: 800px;
+            padding: 20px 0;
+            text-align: center;
+        }
+        #offline-game-box {
+            height: 150px;
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            border-bottom: 3px solid var(--dark-gray);
+            position: relative;
+            overflow: hidden;
+            background-color: var(--game-background);
+            text-align: left;
+            font-family: monospace;
+            font-size: 1.2rem;
+        }
+        .message {
+            color: var(--dark-gray);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .reveille {
+            position: absolute; bottom: 3px; left: 20px; width: 30px; height: 30px; font-size: 28px; line-height: 1; transition: bottom 0.2s linear; 
+        }
+        .reveille::before { content: "🐶"; transform: scaleX(-1); display: block; }
+        .obstacle { position: absolute; bottom: 3px; width: 15px; height: 30px; font-size: 28px; line-height: 1; }
+        .obstacle::before { content: "🌵"; display: block; }
+        
+        .reward { 
+            position: absolute; 
+            width: 25px; 
+            height: 25px; 
+            font-size: 24px; 
+            line-height: 1; 
+        }
+        .reward::before { content: "🦴"; display: block; }
+
+        #score-container { position: absolute; top: 5px; right: 15px; color: var(--maroon); font-weight: bold; display: flex; gap: 15px; align-items: center; }
+        
+        #reward-score {
+            color: #006400; /* Green for rewards */
+            font-weight: bold;
+            font-size: 1.3rem;
+            align-self: center;
+        }
+        
+        #high-score { color: var(--dark-gray); }
+        #high-score::before { content: 'HI '; }
+        #game-status { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.8rem; color: var(--maroon); font-weight: bold; display: none; background: rgba(255, 255, 255, 0.8); padding: 10px 20px; border-radius: 5px; cursor: pointer; text-align: center; }
+        #game-status small { display: block; font-size: 0.9rem; color: var(--dark-gray); font-weight: normal; margin-top: 5px; }
+        /* --- END GAME STYLES --- */
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+      <div class="wrap">
+        <div class="tradition-score-counter">
+            Spirit Points: <span id="spirit-score">0</span>
+        </div>
+
+        <h1 class="brand">Aggie Traditions 🤠</h1>
+        <p class="tagline">A quick, student-friendly guide to the spirit of Texas A&amp;M</p>
+
+        <p class="official-link">
+          <a href="https://www.tamu.edu/traditions/index.html" target="_blank" rel="noopener">
+            Visit Official Texas A&amp;M Traditions Page →
+          </a>
+        </p>
+        
+        <div style="margin-top: 1.5rem;">
+            <button id="toggle-game-btn" class="menu-btn" style="background-color: #000; margin-right: 0.5rem;">
+                No Whoop? Play Game! 🎮
+            </button>
+            
+            <nav class="menu">
+              <button class="menu-btn">Menu ▾</button>
+              <ul class="dropdown">
+                <li><a href="#countdown">Yell Status 📢</a></li> 
+                <li><a href="#calendar">Calendar 📅</a></li> 
+                <li><a href="#spirit">Spirit</a></li>
+                <li><a href="#service">Service</a></li>
+                <li><a href="#game-day">Game Day</a></li>
+                <li><a href="#solemn">Solemn</a></li>
+                <li><a href="#history">History</a></li>
+              </ul>
+            </nav>
+        </div>
+      </div>
+    </header>
+    
+    <section id="offline-game-section" class="wrap">
+        <div class="message">
+            Whoop! Try the Aggie Run. Press **SPACE** or **tap** to jump!
+        </div>
+        <div id="offline-game-box">
+            <div id="reveille" class="reveille"></div>
+            <div id="score-container">
+                <span id="reward-score">🦴 0</span>
+                <span id="high-score">00000</span>
+                <span id="game-score">00000</span>
+            </div>
+            <div id="game-status" style="display: none;">
+                GAME OVER<small>Click or Press SPACE to restart</small>
+            </div>
+        </div>
+    </section>
+
+    <main class="wrap">
+        <div id="countdown" class="tradition-section">
+            <h2>Midnight Yell Status 📢</h2>
+            <p><strong>Midnight Yell Practice</strong> happens the Friday night before every home football game. See if we're counting down to the next one!</p>
+            
+            <div id="yell-countdown-box">
+                Loading status...
+            </div>
+        </div>
+
+        <div id="calendar" class="tradition-section">
+            <h2>Aggie Event Calendar 📅</h2>
+            <p>Check the dates for major traditions and events! **(Data is hardcoded to simulate fetching live data.)**</p>
+            <button id="fetch-dates-btn" class="menu-btn">Get Official Event Dates</button>
+            
+            <div id="calendar-data">
+                Click the button to load key dates...
+            </div>
+        </div>
+        
+        <div id="spirit" class="tradition-section">
+            <div class="tradition-controls">
+                <a href="#" target="_blank" class="calendar-link-btn" data-tradition="spirit">📅 Plan to Attend?</a>
+                <label for="attended-spirit" class="attendance-tracker" data-tradition="spirit">
+                    <input type="checkbox" id="attended-spirit">
+                    <span></span> Attended? (Spirit)
+                </label>
+            </div>
+            <h2>Spirit: Yells and The Twelfth Man 🏈</h2>
+            <p><strong>The Twelfth Man:</strong> Aggie students stand throughout the entire football game to show their readiness to serve. It's a testament to the dedication of E. King Gill, who stood ready in 1922.</p>
+            <p><strong>Aggie Yells:</strong> We don't have cheerleaders; we have **Yell Leaders**! They lead the crowd in organized yells, like the famous **Whoop!** and the **Farmers Fight!**</p>
+            <p><em>Example: "A-G-G-I-E-S!"</em></p>
+        </div>
+
+        <div id="service" class="tradition-section">
+            <div class="tradition-controls">
+                <a href="#" target="_blank" class="calendar-link-btn" data-tradition="service">📅 Plan to Attend?</a>
+                <label for="attended-service" class="attendance-tracker" data-tradition="service">
+                    <input type="checkbox" id="attended-service">
+                    <span></span> Attended? (Service)
+                </label>
+            </div>
+            <h2>Service: Muster and Big Event 🛠️</h2>
+            <p><strong>Aggie Muster:</strong> Held on April 21st, this solemn gathering honors current and former students who have died during the past year. As each name is called, a representative answers **"Here."**</p>
+            <p><strong>The Big Event:</strong> The largest single-day, student-run service project in the nation. Thousands of students dedicate a Saturday to giving back to the Brazos Valley community.</p>
+        </div>
+
+        <div id="game-day" class="tradition-section">
+            <div class="tradition-controls">
+                <a href="#" target="_blank" class="calendar-link-btn" data-tradition="game-day">📅 Plan to Attend?</a>
+                <label for="attended-gameday" class="attendance-tracker" data-tradition="game-day">
+                    <input type="checkbox" id="attended-gameday">
+                    <span></span> Attended? (Game Day)
+                </label>
+            </div>
+            <h2>Game Day: Midnight Yell & Howdy 👋</h2>
+            <p><strong>Midnight Yell Practice:</strong> The night before every home football game, students gather in Kyle Field to practice the yells for the next day's game. It's loud, enthusiastic, and uniquely Aggie.</p>
+            <p><strong>Howdy:</strong> The official Aggie greeting! It's a friendly way to say hello and acknowledge fellow members of the Aggie family.</p>
+        </div>
+
+        <div id="solemn" class="tradition-section">
+            <div class="tradition-controls">
+                <a href="#" target="_blank" class="calendar-link-btn" data-tradition="solemn">📅 Plan to Attend?</a>
+                <label for="attended-solemn" class="attendance-tracker" data-tradition="solemn">
+                    <input type="checkbox" id="attended-solemn">
+                    <span></span> Attended? (Solemn)
+                </label>
+            </div>
+            <h2>Solemn: The Century Tree 🌳</h2>
+            <p><strong>The Century Tree:</strong> This massive live oak, over 100 years old, is a sacred spot. Tradition holds that if a couple walks together under it, they will eventually marry. If a marriage proposal is accepted under it, the marriage will last forever.</p>
+        </div>
+
+        <div id="history" class="tradition-section">
+            <div class="tradition-controls">
+                <a href="#" target="_blank" class="calendar-link-btn" data-tradition="history">📅 Plan to Attend?</a>
+                <label for="attended-history" class="attendance-tracker" data-tradition="history">
+                    <input type="checkbox" id="attended-history">
+                    <span></span> Attended? (Ring/Corps)
+                </label>
+            </div>
+            <h2>History: The Aggie Ring and Corps 💍</h2>
+            <p><strong>The Aggie Ring:</strong> The most visible symbol of the Aggie Network. Earning the ring signifies a student's completion of a significant portion of their degree and commitment to the university's values.</p>
+            <p><strong>The Corps of Cadets:</strong> The largest, oldest, and most visible student organization. It's the best-known symbol of Texas A&M's rich history and military heritage.</p>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Page Logic Initialization ---
+            const menuButton = document.querySelector('.menu-btn');
+            const menuNav = document.querySelector('.menu');
+            const dropdownLinks = document.querySelectorAll('.dropdown a');
+            const fetchDatesButton = document.getElementById('fetch-dates-btn');
+            const calendarDataDiv = document.getElementById('calendar-data');
+            const countdownBox = document.getElementById('yell-countdown-box');
+            const toggleGameButton = document.getElementById('toggle-game-btn');
+            const offlineGameSection = document.getElementById('offline-game-section');
+            const calendarLinkButtons = document.querySelectorAll('.calendar-link-btn');
+            const attendanceTrackers = document.querySelectorAll('.attendance-tracker');
+            const spiritScoreDisplay = document.getElementById('spirit-score');
+
+            // Tradition Data for Calendar Links (Unchanged)
+            const TRADITION_DETAILS = {
+                'spirit': {
+                    title: 'Aggie Spirit Day: Yells & Twelfth Man',
+                    description: 'Remember to stand for the Twelfth Man and practice those yells!',
+                    location: 'Kyle Field / Texas A&M Campus',
+                    date: 'yearly_august_30'
+                },
+                'service': {
+                    title: 'Aggie Muster / The Big Event',
+                    description: 'Check dates for the Big Event (Spring) and Muster (April 21st) to honor the Aggie family and serve the community.',
+                    location: 'Texas A&M Campus / Brazos Valley',
+                    date: 'yearly_april_21' 
+                },
+                'game-day': {
+                    title: 'Midnight Yell Practice Reminder',
+                    description: 'Attend Midnight Yell the Friday night before a home football game!',
+                    location: 'Kyle Field, College Station, TX',
+                    date: 'yearly_september_1'
+                },
+                'solemn': {
+                    title: 'Walk under The Century Tree 🌳',
+                    description: 'A special tradition for luck and long-lasting love!',
+                    location: 'The Century Tree, Texas A&M Campus',
+                    date: 'all_day'
+                },
+                'history': {
+                    title: 'Aggie Ring Day',
+                    description: 'Mark your calendar for Ring Day, or remember the history of the Corps of Cadets.',
+                    location: 'Clayton W. Williams, Jr. Alumni Center',
+                    date: 'yearly_fall_ring'
+                }
+            };
+
+            // GPS Verification Constants (Unchanged)
+            const TRADITION_LOCATIONS = {
+                'spirit': { lat: 30.6103, long: -96.3400 },    // Kyle Field
+                'service': { lat: 30.6026, long: -96.3453 },  // Reed Arena (for Muster)
+                'game-day': { lat: 30.6103, long: -96.3400 }, // Kyle Field
+                'solemn': { lat: 30.6120, long: -96.3400 },  // Century Tree
+                'history': { lat: 30.6105, long: -96.3435 }  // Alumni Center (for Ring Day)
+            };
+            const VERIFICATION_RADIUS_METERS = 200;
+            const ATTENDANCE_KEY_PREFIX = 'aggieAttended_';
+            const SPIRIT_SCORE_KEY = 'aggieSpiritScore';
+            
+            // Calendar Link Generator (Unchanged)
+            function createGoogleCalendarLink(traditionId) {
+                const detail = TRADITION_DETAILS[traditionId];
+                if (!detail) return '#';
+                const baseUrl = 'https://www.google.com/calendar/render?action=TEMPLATE';
+                function getNextAnnualDate(month, day) {
+                    const now = new Date();
+                    let year = now.getFullYear();
+                    let eventDate = new Date(year, month - 1, day);
+                    if (eventDate < now) {
+                        eventDate.setFullYear(year + 1);
+                    }
+                    const format = (date) => date.toISOString().replace(/[-:]|\.\d{3}/g, '').substring(0, 15) + 'Z';
+                    const startTime = format(eventDate);
+                    eventDate.setHours(eventDate.getHours() + 2); 
+                    const endTime = format(eventDate);
+                    return `${startTime}/${endTime}`;
+                }
+                let dates = '20250101T000000Z/20260101T000000Z';
+                if (detail.date === 'yearly_april_21') {
+                    dates = getNextAnnualDate(4, 21);
+                } else if (detail.date === 'yearly_september_1') {
+                    dates = getNextAnnualDate(9, 1);
+                } else if (detail.date === 'all_day') {
+                    const nextDay = new Date();
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    const formattedDate = nextDay.toISOString().substring(0, 10).replace(/-/g, '');
+                    dates = `${formattedDate}/${formattedDate}`; 
+                }
+                const params = new URLSearchParams({
+                    text: detail.title,
+                    details: detail.description,
+                    location: detail.location,
+                    dates: dates
+                });
+                return `${baseUrl}&${params.toString()}`;
+            }
+
+            // Menu Logic (Unchanged)
+            menuButton.addEventListener('click', function() { menuNav.classList.toggle('show'); });
+            dropdownLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        event.preventDefault(); 
+                        window.scrollTo({ top: targetElement.offsetTop - 100, behavior: 'smooth' });
+                    }
+                    menuNav.classList.remove('show');
+                });
+            });
+            document.addEventListener('click', function(event) {
+                if (!menuNav.contains(event.target) && event.target !== toggleGameButton) {
+                    menuNav.classList.remove('show');
+                }
+            });
+
+            // Calendar Data Logic (Simulated) (Unchanged)
+            fetchDatesButton.addEventListener('click', function() {
+                calendarDataDiv.innerHTML = '<p style="color: var(--maroon);">Fetching official dates... (Simulated)</p>';
+                setTimeout(() => {
+                    const eventData = [
+                        { name: "Aggie Muster", date: "April 21st (Annually)" },
+                        { name: "The Big Event", date: "Spring Semester (March/April)" },
+                        { name: "Ring Day", date: "Various Dates (Spring/Fall)" },
+                        { name: "Silver Taps", date: "First Tuesday of the month (If death occurs)" },
+                        { name: "First Football Game", date: "Late August/Early September" }
+                    ];
+                    let htmlContent = '<h4>Key Annual Traditions:</h4>';
+                    eventData.forEach(event => {
+                        htmlContent += `<p><strong>${event.name}:</strong> ${event.date}</p>`;
+                    });
+                    calendarDataDiv.innerHTML = htmlContent;
+                    fetchDatesButton.style.display = 'none';
+                }, 1500);
+            });
+
+            // --- (REVISED) Countdown Logic ---
+            function updateCountdown() {
+                // 2025 Home Game Schedule (Saturdays)
+                // Past: Aug 30 (UTSA), Sep 6 (Utah St), Sep 27 (Auburn), Oct 4 (Miss St), Oct 11 (Florida)
+                // Upcoming (as of Oct 19, 2025):
+                const homeGameDates = [
+                    '2025-11-15', // vs. South Carolina
+                    '2025-11-22'  // vs. Samford
+                ];
+
+                const now = new Date();
+                const DAY_MS = 24 * 60 * 60 * 1000;
+                let nextYellDate = null;
+
+                for (const gameDay of homeGameDates) {
+                    // Create a date object for the game (adding T12:00 to avoid timezone shifts)
+                    const gameDate = new Date(gameDay + 'T12:00:00');
+                    
+                    // Midnight Yell is the Friday *before* the game.
+                    // We set it to 23:59:00 on Friday to make the countdown accurate.
+                    const yellDate = new Date(gameDate.getTime() - DAY_MS); // Get Friday
+                    yellDate.setHours(23, 59, 0, 0); // Set to 11:59:00 PM on Friday
+
+                    // Is this Yell Date in the future?
+                    if (yellDate > now) {
+                        nextYellDate = yellDate;
+                        break; // We found the *next* one
+                    }
+                }
+
+                if (!nextYellDate) {
+                    // All games are over
+                    countdownBox.innerHTML = 'Midnight Yell has concluded for the season. See you next year! 👋';
+                    countdownBox.classList.remove('live');
+                    return;
+                }
+                
+                const distance = nextYellDate.getTime() - now.getTime();
+                
+                const days = Math.floor(distance / DAY_MS);
+                const hours = Math.floor((distance % DAY_MS) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                // If distance is negative and within an hour (e.g., Yell is happening)
+                if (distance < 0 && distance > -3600000) { 
+                    countdownBox.innerHTML = 'YELL IS **LIVE**! GET TO KYLE FIELD! 👍';
+                    countdownBox.classList.add('live');
+                } else if (distance < 0) {
+                    // This case should rarely happen if the game list is correct
+                    // But it means the yell just passed.
+                    countdownBox.innerHTML = 'Midnight Yell has concluded. See you next game week! 👋';
+                    countdownBox.classList.remove('live');
+                } else {
+                    let timeString = '';
+                    if (days > 0) {
+                        timeString += `${days} days, `;
+                    }
+                    timeString += `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    countdownBox.innerHTML = `NEXT YELL IN: ${timeString}`;
+                    countdownBox.classList.remove('live');
+                }
+            }
+            setInterval(updateCountdown, 1000);
+            updateCountdown();
+
+            // --- ATTENDANCE TRACKER & GPS LOGIC (Unchanged) ---
+
+            function updateSpiritScore() {
+                let score = 0;
+                attendanceTrackers.forEach(tracker => {
+                    const traditionId = tracker.dataset.tradition;
+                    if (localStorage.getItem(ATTENDANCE_KEY_PREFIX + traditionId) === 'true') {
+                        score++;
+                    }
+                });
+                spiritScoreDisplay.textContent = score;
+            }
+
+            function updateAttendanceDisplay(checkbox) {
+                const traditionSection = checkbox.closest('.tradition-section');
+                const checkmarkSpan = checkbox.nextElementSibling;
+                const calendarBtn = traditionSection.querySelector('.calendar-link-btn');
+
+                if (checkbox.checked) {
+                    traditionSection.classList.add('attended');
+                    checkmarkSpan.textContent = '✓';
+                    if (calendarBtn) calendarBtn.style.display = 'none';
+                } else {
+                    traditionSection.classList.remove('attended');
+                    checkmarkSpan.textContent = '';
+                    if (calendarBtn) calendarBtn.style.display = 'block';
+                }
+            }
+
+            function getHaversineDistance(lat1, lon1, lat2, lon2) {
+                const R = 6371e3; // metres
+                const φ1 = lat1 * Math.PI / 180;
+                const φ2 = lat2 * Math.PI / 180;
+                const Δφ = (lat2 - lat1) * Math.PI / 180;
+                const Δλ = (lon2 - lon1) * Math.PI / 180;
+                const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                        Math.cos(φ1) * Math.cos(φ2) *
+                        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                return R * c;
+            }
+
+            function verifyLocation(tracker, traditionId) {
+                if (!('geolocation' in navigator)) {
+                    alert('Geolocation is not supported by your browser. Cannot verify attendance.');
+                    tracker.classList.remove('verifying');
+                    tracker.querySelector('input').checked = false;
+                    return;
+                }
+
+                const targetLocation = TRADITION_LOCATIONS[traditionId];
+                if (!targetLocation) {
+                    alert('Location for this tradition is not defined. Attendance marked manually.');
+                    completeAttendanceCheck(tracker, traditionId, true); // Manually approve
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        const distance = getHaversineDistance(
+                            targetLocation.lat, targetLocation.long,
+                            latitude, longitude
+                        );
+
+                        if (distance <= VERIFICATION_RADIUS_METERS) {
+                            alert('Gig \'em! Location verified. Spirit Point awarded! 👍');
+                            completeAttendanceCheck(tracker, traditionId, true);
+                        } else {
+                            alert(`Whoops! You seem to be about ${Math.round(distance)} meters away. You must be within ${VERIFICATION_RADIUS_METERS}m to verify. Attendance marked manually for now.`);
+                            completeAttendanceCheck(tracker, traditionId, true); // Allow manual override after warning
+                        }
+                    },
+                    (error) => {
+                        console.error('Geolocation Error:', error);
+                        alert('Could not get your location. Please ensure location services are enabled. Attendance marked manually.');
+                        completeAttendanceCheck(tracker, traditionId, true); // Allow manual override on error
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            }
+
+// --- REVEILLE OFFLINE GAME LOGIC ---
+
+// --- NEW AUDIO ---
+let audioCtx;
+
+/**
+ * Initializes the Web Audio API context.
+ * Must be called by a user interaction (like a click).
+ */
+function initAudio() {
+    if (!audioCtx) {
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+            console.error("Web Audio API is not supported in this browser.", e);
+        }
+    }
+}
+
+/**
+ * Plays a simple synthesized sound.
+ * @param {number} freq - The frequency (pitch) in Hz.
+ * @param {number} duration - The duration in seconds.
+ * @param {string} type - Oscillator type: 'sine', 'square', 'triangle', 'sawtooth'.
+ * @param {number} [volume=0.3] - The volume (0.0 to 1.0).
+ */
+function playSound(freq, duration, type, volume = 0.3) {
+    if (!audioCtx) return; // Audio not initialized or supported
+
+    try {
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        oscillator.type = type;
+        oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
+
+        // Fade out quickly to prevent "popping"
+        gainNode.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        
+        oscillator.start(audioCtx.currentTime);
+        oscillator.stop(audioCtx.currentTime + duration);
+    } catch (e) {
+        console.error("Error playing sound:", e);
+    }
+}
+
+/**
+ * Plays the jump sound effect.
+ * A short, rising "bloop".
+ */
+function playJumpSound() {
+    if (!audioCtx) return;
+    try {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g);
+        g.connect(audioCtx.destination);
+        o.type = 'triangle';
+        const now = audioCtx.currentTime;
+        g.gain.setValueAtTime(0.2, now);
+        o.frequency.setValueAtTime(600, now);
+        o.frequency.linearRampToValueAtTime(900, now + 0.1); // Rising pitch
+        g.gain.linearRampToValueAtTime(0.0001, now + 0.1);
+        o.start(now);
+        o.stop(now + 0.1);
+    } catch (e) { console.error(e); }
+}
+
+/**
+ * Plays the reward collection sound.
+ * A high-pitched "ping".
+ */
+function playRewardSound() {
+    playSound(1200, 0.1, 'sine', 0.2);
+}
+
+/**
+ * Plays the game over sound.
+ * A descending "womp-womp".
+ */
+function playGameOverSound() {
+    if (!audioCtx) return;
+     try {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g);
+        g.connect(audioCtx.destination);
+        o.type = 'square';
+        const now = audioCtx.currentTime;
+        g.gain.setValueAtTime(0.3, now);
+        o.frequency.setValueAtTime(300, now);
+        o.frequency.linearRampToValueAtTime(100, now + 0.4); // Falling pitch
+        g.gain.linearRampToValueAtTime(0.0001, now + 0.4);
+        o.start(now);
+        o.stop(now + 0.4);
+    } catch (e) { console.error(e); }
+}
+
+/**
+ * Plays the new high score sound.
+ * A quick ascending arpeggio.
+ */
+function playHighScoreSound() {
+    if (!audioCtx) return;
+    try {
+        const now = audioCtx.currentTime;
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g);
+        g.connect(audioCtx.destination);
+        o.type = 'triangle';
+        g.gain.setValueAtTime(0.2, now);
+        
+        // Play three quick ascending notes
+        o.frequency.setValueAtTime(800, now);
+        o.frequency.setValueAtTime(1000, now + 0.08);
+        o.frequency.setValueAtTime(1200, now + 0.16);
+        
+        g.gain.linearRampToValueAtTime(0.0001, now + 0.25);
+        o.start(now);
+        o.stop(now + 0.25);
+    } catch (e) { console.error(e); }
+}
+
+/**
+ * Plays the game start sound.
+ * A simple "beep".
+ */
+function playStartSound() {
+    playSound(500, 0.1, 'sine', 0.3);
+}
+
+// --- END NEW AUDIO ---
+
+
+const gameBox = document.getElementById('offline-game-box');
+const reveille = document.getElementById('reveille');
+const gameScoreDisplay = document.getElementById('game-score');
+const highScoreDisplay = document.getElementById('high-score');
+const rewardScoreDisplay = document.getElementById('reward-score');
+const gameStatus = document.getElementById('game-status');
+
+const JUMP_HEIGHT = 90; // pixels
+const JUMP_DURATION = 500; // ms
+const GRAVITY = 3;
+const GAME_SPEED_START = 5;
+const GAME_SPEED_ACCEL = 0.001;
+const OBSTACLE_INTERVAL_MIN = 800;
+const OBSTACLE_INTERVAL_MAX = 2000;
+const REWARD_INTERVAL_MIN = 500;
+const REWARD_INTERVAL_MAX = 3000;
+const HIGH_SCORE_KEY = 'aggieRunHighScore';
+
+let isJumping = false;
+let isAlive = false;
+let gameSpeed = GAME_SPEED_START;
+let score = 0;
+let highScore = 0;
+let rewardScore = 0;
+let obstacleInterval = OBSTACLE_INTERVAL_MIN;
+let rewardInterval = REWARD_INTERVAL_MIN;
+let nextObstacleTime = 0;
+let nextRewardTime = 0;
+let gameLoopId;
+
+// Game Toggle Button
+toggleGameButton.addEventListener('click', function() {
+    const isHidden = offlineGameSection.style.display === 'none';
+    offlineGameSection.style.display = isHidden ? 'block' : 'none';
+    this.textContent = isHidden ? 'Close Game ❌' : 'No Whoop? Play Game! 🎮';
+    this.style.backgroundColor = isHidden ? '#800000' : '#000';
+    if (isHidden && !isAlive) {
+        showStartMessage();
+    } else if (!isHidden && isAlive) {
+        // If we're closing the game, stop the game
+        endGame();
+    }
+});
+
+function showStartMessage() {
+    gameStatus.innerHTML = 'GAME ON! 👍<small>Click or Press SPACE to start</small>';
+    gameStatus.style.display = 'block';
+}
+
+function startGame() {
+    // --- NEW AUDIO ---
+    // Initialize audio on the first action that starts the game
+    if (!audioCtx) {
+        initAudio();
+    }
+    playStartSound();
+    // --- END NEW AUDIO ---
+
+
+    isAlive = true;
+    isJumping = false;
+    score = 0;
+    rewardScore = 0;
+    gameSpeed = GAME_SPEED_START;
+    nextObstacleTime = OBSTACLE_INTERVAL_MIN;
+    nextRewardTime = REWARD_INTERVAL_MIN;
+    
+    gameStatus.style.display = 'none';
+    reveille.style.bottom = '3px';
+    
+    // Clear old obstacles/rewards
+    document.querySelectorAll('.obstacle, .reward').forEach(el => el.remove());
+    
+    // Load high score
+    highScore = parseInt(localStorage.getItem(HIGH_SCORE_KEY)) || 0;
+    highScoreDisplay.textContent = highScore.toString().padStart(5, '0');
+    highScoreDisplay.style.color = 'var(--dark-gray)'; // Reset color
+    
+    // Reset scores
+    rewardScoreDisplay.textContent = `🦴 ${rewardScore}`;
+    gameScoreDisplay.textContent = '00000';
+
+    // Start the game loop
+    if (gameLoopId) cancelAnimationFrame(gameLoopId);
+    gameLoopId = requestAnimationFrame(gameLoop);
+}
+
+function jump() {
+    if (isJumping || !isAlive) return;
+    
+    // --- NEW AUDIO ---
+    playJumpSound();
+    // --- END NEW AUDIO ---
+
+    isJumping = true;
+    let jumpStartTime = Date.now();
+    
+    function jumpAnimation() {
+        let timeElapsed = Date.now() - jumpStartTime;
+        if (timeElapsed > JUMP_DURATION) {
+            reveille.style.bottom = '3px';
+            isJumping = false;
+            return;
+        }
+        
+        // Parabolic arc: y = -a(x - h)^2 + k
+        // Simple sin wave approximation for smooth up/down
+        let progress = timeElapsed / JUMP_DURATION; // 0 to 1
+        let height = Math.sin(progress * Math.PI) * JUMP_HEIGHT;
+        reveille.style.bottom = (height + 3) + 'px';
+        
+        requestAnimationFrame(jumpAnimation);
+    }
+    
+    requestAnimationFrame(jumpAnimation);
+}
+
+function createObstacle() {
+    const obstacle = document.createElement('div');
+    obstacle.classList.add('obstacle');
+    obstacle.style.right = '-20px';
+    gameBox.appendChild(obstacle);
+}
+
+function createReward() {
+    const reward = document.createElement('div');
+    reward.classList.add('reward');
+    reward.style.right = '-20px';
+    // Random height
+    const height = Math.random() < 0.5 ? 20 : 70; // Low or high
+    reward.style.bottom = (height + 3) + 'px';
+    gameBox.appendChild(reward);
+}
+
+function moveGameElements() {
+    let obstacles = document.querySelectorAll('.obstacle');
+    let rewards = document.querySelectorAll('.reward');
+    
+    obstacles.forEach(obstacle => {
+        let currentRight = parseFloat(obstacle.style.right);
+        if (currentRight > gameBox.offsetWidth) {
+            obstacle.remove();
+        } else {
+            obstacle.style.right = (currentRight + gameSpeed) + 'px';
+        }
+    });
+    
+    rewards.forEach(reward => {
+        let currentRight = parseFloat(reward.style.right);
+        if (currentRight > gameBox.offsetWidth) {
+            reward.remove();
+        } else {
+            reward.style.right = (currentRight + gameSpeed) + 'px';
+        }
+    });
+}
+
+function isColliding(rect1, rect2) {
+    // Simple AABB collision detection
+    return (
+        rect1.left < rect2.right &&
+        rect1.right > rect2.left &&
+        rect1.top < rect2.bottom &&
+        rect1.bottom > rect2.top
+    );
+}
+
+function checkCollision() {
+    const reveilleRect = reveille.getBoundingClientRect();
+    const obstacles = document.querySelectorAll('.obstacle');
+    
+    for (let obstacle of obstacles) {
+        const obstacleRect = obstacle.getBoundingClientRect();
+        // Reduce hitbox size slightly to be more forgiving
+        const reveilleHitbox = {
+            left: reveilleRect.left + 5,
+            right: reveilleRect.right - 5,
+            top: reveilleRect.top + 5,
+            bottom: reveilleRect.bottom
+        };
+        const obstacleHitbox = {
+            left: obstacleRect.left + 5,
+            right: obstacleRect.right - 5,
+            top: obstacleRect.top,
+            bottom: obstacleRect.bottom - 5
+        };
+
+        if (isColliding(reveilleHitbox, obstacleHitbox)) {
+            endGame();
+            return;
+        }
+    }
+}
+
+function checkRewardCollision() {
+    const reveilleRect = reveille.getBoundingClientRect();
+    const rewards = document.querySelectorAll('.reward');
+
+    for (let reward of rewards) {
+        const rewardRect = reward.getBoundingClientRect();
+        if (isColliding(reveilleRect, rewardRect)) {
+            
+            // --- NEW AUDIO ---
+            playRewardSound();
+            // --- END NEW AUDIO ---
+            
+            reward.remove();
+            rewardScore++;
+            rewardScoreDisplay.textContent = `🦴 ${rewardScore}`;
+        }
+    }
+}
+
+function endGame() {
+    // --- NEW AUDIO ---
+    playGameOverSound();
+    // --- END NEW AUDIO ---
+    
+    isAlive = false;
+    cancelAnimationFrame(gameLoopId);
+    gameStatus.innerHTML = 'GAME OVER<small>Click or Press SPACE to restart</small>';
+    gameStatus.style.display = 'block';
+    
+    if (score > highScore) {
+        highScore = score;
+        localStorage.setItem(HIGH_SCORE_KEY, highScore);
+    }
+}
+
+function updateScore() {
+    score++;
+    gameScoreDisplay.textContent = score.toString().padStart(5, '0');
+    
+    // Check for new high score *while playing*
+    if (score > highScore && highScore > 0) {
+        if (highScoreDisplay.style.color !== 'var(--maroon)') {
+            
+            // --- NEW AUDIO ---
+            playHighScoreSound();
+            // --- END NEW AUDIO ---
+            
+            highScoreDisplay.style.color = 'var(--maroon)';
+        }
+        highScoreDisplay.textContent = score.toString().padStart(5, '0');
+    }
+}
+
+let lastFrameTime = 0;
+function gameLoop(timestamp) {
+    if (!isAlive) return;
+    
+    if (lastFrameTime === 0) {
+        lastFrameTime = timestamp;
+        gameLoopId = requestAnimationFrame(gameLoop);
+        return;
+    }
+    
+    let deltaTime = timestamp - lastFrameTime;
+    lastFrameTime = timestamp;
+
+    gameSpeed += GAME_SPEED_ACCEL;
+    
+    // Handle obstacle creation
+    nextObstacleTime -= deltaTime;
+    if (nextObstacleTime <= 0) {
+        createObstacle();
+        obstacleInterval = Math.random() * (OBSTACLE_INTERVAL_MAX - OBSTACLE_INTERVAL_MIN) + OBSTACLE_INTERVAL_MIN;
+        // Ensure obstacles aren't *too* close together at high speeds
+        nextObstacleTime = Math.max(obstacleInterval / (gameSpeed / GAME_SPEED_START), 400); 
+    }
+    
+    // Handle reward creation
+    nextRewardTime -= deltaTime;
+    if (nextRewardTime <= 0) {
+        createReward();
+        rewardInterval = Math.random() * (REWARD_INTERVAL_MAX - REWARD_INTERVAL_MIN) + REWARD_INTERVAL_MIN;
+        nextRewardTime = rewardInterval / (gameSpeed / GAME_SPEED_START);
+    }
+
+    moveGameElements();
+    checkCollision();
+    checkRewardCollision();
+    updateScore();
+    
+    gameLoopId = requestAnimationFrame(gameLoop);
+}
+
+// Event Listeners for Game
+function handleGameInput(event) {
+    if (event.code === 'Space' || event.type === 'touchstart' || event.type === 'click') {
+        event.preventDefault();
+        if (isAlive) {
+            jump();
+        } else {
+            // Check if the click is on the game status box
+            if (event.target === gameStatus || event.code === 'Space') {
+                startGame();
+            }
+        }
+    }
+}
+
+// Listen for clicks on the game status (Restart)
+gameStatus.addEventListener('click', startGame); 
+// Listen for global spacebar or taps to jump/start
+document.addEventListener('keydown', handleGameInput);
+gameBox.addEventListener('touchstart', handleGameInput, { passive: false });
+
+
+// --- END OF GAME LOGIC ---
+
+            function completeAttendanceCheck(tracker, traditionId, isAttended) {
+                tracker.classList.remove('verifying');
+                const checkbox = tracker.querySelector('input');
+                
+                if (isAttended) {
+                    checkbox.checked = true;
+                    localStorage.setItem(ATTENDANCE_KEY_PREFIX + traditionId, 'true');
+                } else {
+                    checkbox.checked = false;
+                    localStorage.removeItem(ATTENDANCE_KEY_PREFIX + traditionId);
+                }
+                
+                updateAttendanceDisplay(checkbox);
+                updateSpiritScore();
+            }
+
+            // Setup Calendar Links
+            calendarLinkButtons.forEach(btn => {
+                const traditionId = btn.dataset.tradition;
+                btn.href = createGoogleCalendarLink(traditionId);
+            });
+            
+            // Setup Attendance Trackers
+            attendanceTrackers.forEach(tracker => {
+                const checkbox = tracker.querySelector('input');
+                const traditionId = tracker.dataset.tradition;
+
+                // Load saved state
+                if (localStorage.getItem(ATTENDANCE_KEY_PREFIX + traditionId) === 'true') {
+                    checkbox.checked = true;
+                }
+                updateAttendanceDisplay(checkbox);
+
+                // Add click listener to the *label* (tracker)
+                tracker.addEventListener('click', function(event) {
+                    event.preventDefault(); // Stop the checkbox default behavior
+                    
+                    const wasChecked = checkbox.checked;
+                    
+                    if (wasChecked) {
+                        // If it was checked, uncheck it
+                        completeAttendanceCheck(tracker, traditionId, false);
+                    } else {
+                        // If it was not checked, start verification
+                        tracker.classList.add('verifying');
+                        // Simulate verification or run real GPS check
+                        // For this example, we'll use the GPS verification
+                        verifyLocation(tracker, traditionId);
+                    }
+                });
+            });
+
+            // Initial Spirit Score Load
+            updateSpiritScore();
+
+        });
+    </script>
+</body>
+</html>
