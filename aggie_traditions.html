@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aggie Traditions & Calendar 🤠 | A Quick Guide</title>
+    <style>
+        /* CSS is embedded here */
+        :root {
+            --maroon: #500000;
+            --white: #ffffff;
+            --light-gray: #f1f1f1;
+            --dark-gray: #333;
+            --font-family: system-ui, sans-serif;
+            --game-background: #ececec;
+        }
+
+        /* Background Updated to Maroon and White Pixel Art Checkerboard */
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            min-height: 100vh;
+            color: #1a1a1a;
+            
+            /* Maroon and White Pixel Art Pattern */
+            background-color: var(--white); /* Fallback */
+            background-image: 
+                linear-gradient(45deg, var(--maroon) 25%, transparent 25%, transparent 75%, var(--maroon) 75%, var(--maroon)),
+                linear-gradient(45deg, var(--maroon) 25%, transparent 25%, transparent 75%, var(--maroon) 75%, var(--maroon));
+            background-size: 20px 20px; /* Size of one 'pixel block' */
+            background-position: 0 0, 10px 10px; /* Offset for checkerboard effect */
+            background-repeat: repeat;
+        }
+
+        /* Overlay for readability */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            /* Slightly higher opacity for better text contrast on the patterned background */
+            background: rgba(255, 255, 255, 0.9);
+            z-index: -1; /* Ensures content sits above the overlay */
+        }
+
+        .wrap {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header styling */
+        .site-header {
+            text-align: center;
+            padding: 2rem 1rem;
+            background-color: rgba(255, 255, 255, 0.98);
+            border-radius: 10px;
+            margin: 1rem auto;
+            max-width: 800px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Brand & tagline */
+        .brand {
+            color: var(--maroon);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--dark-gray);
+            margin-top: 0;
+        }
+
+        /* Official link */
+        .official-link a {
+            color: var(--maroon);
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .official-link a:hover {
+            color: #800000;
+        }
+
+        /* Drop-down menu */
+        .menu {
+            position: relative;
+            display: inline-block;
+            margin-top: 1.5rem;
+        }
+
+        .menu-btn {
+            background-color: var(--maroon);
+            color: var(--white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+            margin: 0 0.5rem; 
+        }
+
+        .menu-btn:hover {
+            background-color: #800000;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            background-color: var(--white);
+            min-width: 180px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 10;
+            border-radius: 5px;
+            margin-top: 0.5rem;
+            list-style: none;
+            padding: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+
+
+        /* Style for each event item in the calendar */
+        .event-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .event-details {
+            flex-grow: 1;
+        }
+
+        /* Style for events that have already passed */
+        .event-item.passed .event-details {
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        /* Container for the attendance checkbox */
+        .event-attendance-control {
+            margin-left: 20px;
+            white-space: nowrap; /* Prevents the label from wrapping */
+            font-size: 0.9em;
+            font-weight: bold;
+            color: var(--maroon);
+            cursor: pointer;
+        }
+        .event-attendance-control input {
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        .dropdown li a {
+            color: var(--maroon);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.2s;
+            font-weight: 500;
+        }
+
+        .dropdown li a:hover {
+            background-color: var(--light-gray);
+        }
+
+        /* Show dropdown on button click - Toggled by JavaScript */
+        .menu.show .dropdown {
+            display: block;
+        }
+
+        /* Main Content Styling */
+        main {
+            padding: 2rem 0;
+        }
+
+        .tradition-section {
+            background-color: rgba(255, 255, 255, 0.98);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: relative; /* For the attendance badge */
+        }
+
+        .tradition-section h2 {
+            color: var(--maroon);
+            border-bottom: 3px solid var(--maroon);
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        /* --- ATTENDANCE TRACKER & CALENDAR LINK STYLES --- */
+        .tradition-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        
+        .attendance-tracker {
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            border: 2px solid var(--maroon);
+            border-radius: 5px;
+            background-color: var(--light-gray);
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--maroon);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .attendance-tracker input[type="checkbox"] {
+            opacity: 0;
+            position: absolute;
+        }
+
+        .attendance-tracker span {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--maroon);
+            border-radius: 3px;
+            background-color: var(--white);
+            margin-right: 8px;
+            line-height: 1;
+            text-align: center;
+            color: var(--white);
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        /* State when checked */
+        .attendance-tracker input[type="checkbox"]:checked + span {
+            background-color: var(--maroon);
+            border-color: var(--maroon);
+        }
+
+        .tradition-section.attended .attendance-tracker {
+            background-color: var(--maroon);
+            color: var(--white);
+            border-color: var(--white);
+        }
+
+        /* New Calendar Button Style */
+        .calendar-link-btn {
+            display: none; 
+            background-color: #008000; /* Green for Google Calendar */
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+        .calendar-link-btn:hover {
+            background-color: #006400;
+        }
+        .tradition-section:not(.attended) .calendar-link-btn {
+            display: block; 
+        }
+
+        /* Responsive adjustments for controls */
+        @media (max-width: 600px) {
+            .tradition-controls {
+                position: static;
+                flex-direction: row;
+                justify-content: space-around;
+                margin-top: 10px;
+                padding-top: 10px;
+                border-top: 1px dashed var(--light-gray);
+            }
+        }
+        /* --- END ATTENDANCE TRACKER & CALENDAR LINK STYLES --- */
+        
+        /* Calendar specific styles */
+        #calendar-data {
+            border: 2px solid var(--maroon);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            background-color: var(--light-gray);
+        }
+
+        #calendar-data p strong {
+            display: inline-block;
+            min-width: 120px;
+            color: var(--maroon);
+        }
+
+        /* Countdown Box Styles */
+        #yell-countdown-box {
+            text-align: center;
+            padding: 1rem 0;
+            border-radius: 5px;
+            margin-top: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--maroon);
+            background-color: var(--light-gray);
+            border: 3px dashed var(--maroon);
+        }
+        #yell-countdown-box.live {
+            background-color: #800000; 
+            color: var(--white);
+            border: 3px solid var(--white);
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+            to { box-shadow: 0 0 10px 10px rgba(255, 255, 255, 0); }
+        }
+
+        /* --- REVEILLE OFFLINE GAME STYLES --- */
+        #offline-game-section {
+            display: none; 
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 1rem auto;
+            max-width: 800px;
+            padding: 20px 0;
+            text-align: center;
+        }
+        #offline-game-box {
+            height: 150px;
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            border-bottom: 3px solid var(--dark-gray);
+            position: relative;
+            overflow: hidden;
+            background-color: var(--game-background);
+            text-align: left;
+            font-family: monospace;
+            font-size: 1.2rem;
+        }
+        .message {
+            color: var(--dark-gray);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .reveille {
+            position: absolute; bottom: 3px; left: 20px; width: 30px; height: 30px; font-size: 28px; line-height: 1; transition: bottom 0.2s linear; 
+        }
+        .reveille::before { content: "🐶"; transform: scaleX(-1); display: block; }
+        .obstacle { position: absolute; bottom: 3px; width: 15px; height: 30px; font-size: 28px; line-height: 1; }
+        .obstacle::before { content: "🌵"; display: block; }
+        
+        #score-container { position: absolute; top: 5px; right: 15px; color: var(--maroon); font-weight: bold; display: flex; gap: 15px; }
+        #high-score { color: var(--dark-gray); }
+        #high-score::before { content: 'HI '; }
+        #game-status { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.8rem; color: var(--maroon); font-weight: bold; display: none; background: rgba(255, 255, 255, 0.8); padding: 10px 20px; border-radius: 5px; cursor: pointer; text-align: center; }
+        #game-status small { display: block; font-size: 0.9rem; color: var(--dark-gray); font-weight: normal; margin-top: 5px; }
+        /* --- END GAME STYLES --- */
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+      <div class="wrap">
+        <h1 class="brand">Aggie Traditions 🤠</h1>
+        <p class="tagline">A quick, student-friendly guide to the spirit of Texas A&amp;M</p>
+
+        <p class="official-link">
+          <a href="https://www.tamu.edu/traditions/index.html" target="_blank" rel="noopener">
+            Visit Official Texas A&amp;M Traditions Page →
+          </a>
+        </p>
+        
+        <div style="margin-top: 1.5rem;">
+            <button id="toggle-game-btn" class="menu-btn" style="background-color: #000; margin-right: 0.5rem;">
+                No Whoop? Play Game! 🎮
+            </button>
+            
+            <nav class="menu">
+              <button class="menu-btn">Menu ▾</button>
+              <ul class="dropdown">
+                <li><a href="#countdown">Yell Status 📢</a></li> 
+                <li><a href="#calendar">Calendar 📅</a></li> 
+                <li><a href="#spirit">Spirit</a></li>
+                <li><a href="#service">Service</a></li>
+                <li><a href="#game-day">Game Day</a></li>
+                <li><a href="#solemn">Solemn</a></li>
+                <li><a href="#history">History</a></li>
+              </ul>
+            </nav>
+        </div>
+      </div>
+    </header>
+    
+    <section id="offline-game-section" class="wrap">
+        <div class="message">
+            Whoop! Try the Aggie Run. Press **SPACE** or **tap** to jump!
+        </div>
+        <div id="offline-game-box">
+            <div id="reveille" class="reveille"></div>
+            <div id="score-container">
+                <span id="high-score">00000</span>
+                <span id="game-score">00000</span>
+            </div>
+            <div id="game-status" style="display: none;">
+                GAME OVER<small>Click or Press SPACE to restart</small>
+            </div>
+        </div>
+    </section>
+
+    <main class="wrap">
+        <div id="countdown" class="tradition-section">
+            <h2>Midnight Yell Status 📢</h2>
+            <p><strong>Midnight Yell Practice</strong> happens the Friday night before every home football game. See if we're counting down to the next one!</p>
+            
+            <div id="yell-countdown-box">
+                Loading status...
+            </div>
+        </div>
+
+        <div id="calendar" class="tradition-section">
+            <h2>Aggie Event Calendar 📅</h2>
+            <p>Check the dates for major traditions and events! **(Data is hardcoded to simulate fetching live data.)**</p>
+            <button id="fetch-dates-btn" class="menu-btn">Get Official Event Dates</button>
+            
+            <div id="calendar-data">
+                Click the button to load key dates...
+            </div>
+        </div>
+        
+        <div id="spirit" class="tradition-section">
+            <div class="tradition-controls">
+                <a href="#" target="_blank" class="calendar-link-btn" data-tradition="spirit">📅 Plan to Attend?</a>
+                <label for="attended-spirit" class="attendance-tracker">
+                    <input type="checkbox" id="attended-spirit" data-tradition="spirit">
+                    <span></span> Attended? (Spirit)
+                </label>
+            </div>
+            <h2>Spirit: Yells and The Twelfth Man 🏈</h2>
+            <p><strong>The Twelfth Man:</strong> Aggie students stand throughout the entire football game to show their readiness to serve. It's a testament to the dedication of E. King Gill, who stood ready in 1922.</p>
+            <p><strong>Aggie Yells:</strong> We don't have cheerleaders; we have **Yell Leaders**! They lead the crowd in organized yells, like the famous **Whoop!** and the **Farmers Fight!**</p>
+            <p><em>Example: "A-G-G-I-E-S!"</em></p>
+        </div>
+
+        <div id="service" class="tradition-section">
+            <div class="tradition-controls">
+                <a href="#" target="_blank" class="calendar-link-btn" data-tradition="service">📅 Plan to Attend?</a>
+                <label for="attended-service" class="attendance-tracker">
+                    <input type="checkbox" id="attended-service" data-tradition="service">
+                    <span></span> Attended? (Service)
+                </label>
+            </div>
+            <h2>Service: Muster and Big Event 🛠️</h2>
+            <p><strong>Aggie Muster:</strong> Held on April 21st, this solemn gathering honors current and former students who have died during the past year. As each name is called, a representative answers **"Here."**</p>
+            <p><strong>The Big Event:</strong> The largest single-day, student-run service project in the nation. Thousands of students dedicate a Saturday to giving back to the Brazos Valley community.</p>
+        </div>
+
+        <div id="game-day" class="tradition-section">
+            <div class="tradition-controls">
+                <a href="#" target="_blank" class="calendar-link-btn" data-tradition="game-day">📅 Plan to Attend?</a>
+                <label for="attended-gameday" class="attendance-tracker">
+                    <input type="checkbox" id="attended-gameday" data-tradition="game-day">
+                    <span></span> Attended? (Game Day)
+                </label>
+            </div>
+            <h2>Game Day: Midnight Yell & Howdy 👋</h2>
+            <p><strong>Midnight Yell Practice:</strong> The night before every home football game, students gather in Kyle Field to practice the yells for the next day's game. It's loud, enthusiastic, and uniquely Aggie.</p>
+            <p><strong>Howdy:</strong> The official Aggie greeting! It's a friendly way to say hello and acknowledge fellow members of the Aggie family.</p>
+        </div>
+
+        <div id="solemn" class="tradition-section">
+            <div class="tradition-controls">
+                <a href="#" target="_blank" class="calendar-link-btn" data-tradition="solemn">📅 Plan to Attend?</a>
+                <label for="attended-solemn" class="attendance-tracker">
+                    <input type="checkbox" id="attended-solemn" data-tradition="solemn">
+                    <span></span> Attended? (Solemn)
+                </label>
+            </div>
+            <h2>Solemn: The Century Tree 🌳</h2>
+            <p><strong>The Century Tree:</strong> This massive live oak, over 100 years old, is a sacred spot. Tradition holds that if a couple walks together under it, they will eventually marry. If a marriage proposal is accepted under it, the marriage will last forever.</p>
+        </div>
+
+        <div id="history" class="tradition-section">
+            <div class="tradition-controls">
+                <a href="#" target="_blank" class="calendar-link-btn" data-tradition="history">📅 Plan to Attend?</a>
+                <label for="attended-history" class="attendance-tracker">
+                    <input type="checkbox" id="attended-history" data-tradition="history">
+                    <span></span> Attended? (Ring/Corps)
+                </label>
+            </div>
+            <h2>History: The Aggie Ring and Corps 💍</h2>
+            <p><strong>The Aggie Ring:</strong> The most visible symbol of the Aggie Network. Earning the ring signifies a student's completion of a significant portion of their degree and commitment to the university's values.</p>
+            <p><strong>The Corps of Cadets:</strong> The largest, oldest, and most visible student organization. It's the best-known symbol of Texas A&M's rich history and military heritage.</p>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Page Logic Initialization ---
+            const menuButton = document.querySelector('.menu-btn');
+            const menuNav = document.querySelector('.menu');
+            const dropdownLinks = document.querySelectorAll('.dropdown a');
+            const fetchDatesButton = document.getElementById('fetch-dates-btn');
+            const calendarDataDiv = document.getElementById('calendar-data');
+            const countdownBox = document.getElementById('yell-countdown-box');
+            const toggleGameButton = document.getElementById('toggle-game-btn');
+            const offlineGameSection = document.getElementById('offline-game-section');
+            const attendanceCheckboxes = document.querySelectorAll('.attendance-tracker input[type="checkbox"]');
+            const calendarLinkButtons = document.querySelectorAll('.calendar-link-btn');
+
+            // Tradition Data for Calendar Links
+            const TRADITION_DETAILS = {
+                'spirit': {
+                    title: 'Aggie Spirit Day: Yells & Twelfth Man',
+                    description: 'Remember to stand for the Twelfth Man and practice those yells!',
+                    location: 'Kyle Field / Texas A&M Campus',
+                    date: 'yearly_august_30' // Placeholder for general awareness
+                },
+                'service': {
+                    title: 'Aggie Muster / The Big Event',
+                    description: 'Check dates for the Big Event (Spring) and Muster (April 21st) to honor the Aggie family and serve the community.',
+                    location: 'Texas A&M Campus / Brazos Valley',
+                    date: 'yearly_april_21' 
+                },
+                'game-day': {
+                    title: 'Midnight Yell Practice Reminder',
+                    description: 'Attend Midnight Yell the Friday night before a home football game!',
+                    location: 'Kyle Field, College Station, TX',
+                    date: 'yearly_september_1' // Placeholder near start of football season
+                },
+                'solemn': {
+                    title: 'Walk under The Century Tree 🌳',
+                    description: 'A special tradition for luck and long-lasting love!',
+                    location: 'The Century Tree, Texas A&M Campus',
+                    date: 'all_day' // All-day event, no specific time
+                },
+                'history': {
+                    title: 'Aggie Ring Day',
+                    description: 'Mark your calendar for Ring Day, or remember the history of the Corps of Cadets.',
+                    location: 'Clayton W. Williams, Jr. Alumni Center',
+                    date: 'yearly_fall_ring' // Placeholder for awareness
+                }
+            };
+            
+            // --- Calendar Link Generator ---
+            function createGoogleCalendarLink(traditionId) {
+                const detail = TRADITION_DETAILS[traditionId];
+                if (!detail) return '#';
+
+                const baseUrl = 'https://www.google.com/calendar/render?action=TEMPLATE';
+                
+                function getNextAnnualDate(month, day) {
+                    const now = new Date();
+                    let year = now.getFullYear();
+                    let eventDate = new Date(year, month - 1, day);
+                    
+                    if (eventDate < now) {
+                        eventDate.setFullYear(year + 1);
+                    }
+                    
+                    const format = (date) => date.toISOString().replace(/[-:]|\.\d{3}/g, '').substring(0, 15) + 'Z';
+                    
+                    const startTime = format(eventDate);
+                    eventDate.setHours(eventDate.getHours() + 2); 
+                    const endTime = format(eventDate);
+
+                    return `${startTime}/${endTime}`;
+                }
+
+                let dates = '20250101T000000Z/20260101T000000Z'; // Default generic
+                if (detail.date === 'yearly_april_21') {
+                    dates = getNextAnnualDate(4, 21);
+                } else if (detail.date === 'yearly_september_1') {
+                    dates = getNextAnnualDate(9, 1);
+                } else if (detail.date === 'all_day') {
+                    const nextDay = new Date();
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    const formattedDate = nextDay.toISOString().substring(0, 10).replace(/-/g, '');
+                    dates = `${formattedDate}/${formattedDate}`; 
+                }
+
+                const params = new URLSearchParams({
+                    text: detail.title,
+                    details: detail.description,
+                    location: detail.location,
+                    dates: dates
+                });
+
+                return `${baseUrl}&${params.toString()}`;
+            }
+
+            // --- Menu Logic ---
+            menuButton.addEventListener('click', function() { menuNav.classList.toggle('show'); });
+            dropdownLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        event.preventDefault(); 
+                        window.scrollTo({ top: targetElement.offsetTop - 100, behavior: 'smooth' });
+                    }
+                    menuNav.classList.remove('show');
+                });
+            });
+            document.addEventListener('click', function(event) {
+                if (!menuNav.contains(event.target) && event.target !== toggleGameButton) {
+                    menuNav.classList.remove('show');
+                }
+            });
+
+            // --- Calendar Data Logic (Live from Backend) ---
+// --- Calendar Data Logic (Live from Backend with 'has_passed' feature) ---
+fetchDatesButton.addEventListener('click', function() {
+    calendarDataDiv.innerHTML = '<p style="color: var(--maroon);">Fetching official dates...</p>';
+    
+    fetch('/api/events')
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(events => {
+            events.sort((a, b) => new Date(a.datetime_str) - new Date(b.datetime_str));
+
+            let htmlContent = '<h4>Upcoming Events & Schedule:</h4>';
+            if (events.length === 0) {
+                htmlContent += '<p>No event data found.</p>';
+            } else {
+                // Loop through each event and build the HTML for it
+                events.forEach((event, index) => {
+                    const eventDate = new Date(event.datetime_str);
+                    const formattedDate = eventDate.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+                    const formattedTime = eventDate.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+
+                    // Check localStorage to see if this event was already marked as attended
+                    const storageKey = `eventAttended_${event.Title}`;
+                    const isAttended = localStorage.getItem(storageKey) === 'true';
+                    
+                    let attendanceControlHtml = '';
+                    // *** THIS IS THE CORE LOGIC ***
+                    // If the event has passed, show a simple label.
+                    if (event.has_passed) {
+                        attendanceControlHtml = `<em>(Passed)</em>`;
+                    } 
+                    // Otherwise, show the interactive "Attend" checkbox.
+                    else {
+                        const uniqueId = `attend-event-${index}`;
+                        const checkedAttr = isAttended ? 'checked' : '';
+                        attendanceControlHtml = `
+                            <label for="${uniqueId}" class="event-attendance-control">
+                                <input type="checkbox" id="${uniqueId}" class="event-attend-checkbox" data-storage-key="${storageKey}" ${checkedAttr}>
+                                Attend
+                            </label>
+                        `;
+                    }
+
+                    // Add a 'passed' class to the whole item if the event is in the past
+                    const passedClass = event.has_passed ? 'passed' : '';
+
+                    htmlContent += `
+                        <div class="event-item ${passedClass}">
+                            <div class="event-details">
+                                <strong>${event.Title}</strong><br>
+                                <small>${formattedDate} at ${formattedTime} - <em>${event.Location}</em></small>
+                            </div>
+                            ${attendanceControlHtml}
+                        </div>
+                    `;
+                });
+            }
+            calendarDataDiv.innerHTML = htmlContent;
+            fetchDatesButton.style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Error fetching event data:', error);
+            calendarDataDiv.innerHTML = '<p style="color: red;">Failed to load event data. Is the backend server running?</p>';
+        });
+});
+
+// Use event delegation to handle clicks on any of the new checkboxes
+calendarDataDiv.addEventListener('change', function(e) {
+    // Only act if the changed element is one of our new event checkboxes
+    if (e.target.matches('.event-attend-checkbox')) {
+        const checkbox = e.target;
+        const storageKey = checkbox.dataset.storageKey;
+        
+        // Save the state (true/false) to localStorage
+        localStorage.setItem(storageKey, checkbox.checked);
+        console.log(`Saved attendance for ${storageKey}: ${checkbox.checked}`);
+    }
+});
+
+            // --- Countdown Logic ---
+            function updateCountdown() {
+                const now = new Date();
+                const DAY_MS = 24 * 60 * 60 * 1000;
+                let nextSaturday = new Date(now);
+                nextSaturday.setDate(now.getDate() + (6 - now.getDay() + 7) % 7);
+                nextSaturday.setHours(0, 0, 0, 0); 
+                if (nextSaturday.getTime() < now.getTime()) {
+                    nextSaturday.setTime(nextSaturday.getTime() + 7 * DAY_MS);
+                }
+                const daysUntilYell = Math.ceil((nextSaturday.getTime() - now.getTime()) / DAY_MS);
+                if (daysUntilYell > 5.5) { 
+                    countdownBox.innerHTML = 'No home game this week. Next Yell date TBD.';
+                    countdownBox.classList.remove('live');
+                    return;
+                }
+                const distance = nextSaturday.getTime() - now.getTime();
+                const days = Math.floor(distance / DAY_MS);
+                const hours = Math.floor((distance % DAY_MS) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                if (distance < 0 && distance > -3600000) { 
+                    countdownBox.innerHTML = 'YELL IS **LIVE**! GET TO KYLE FIELD! 👍';
+                    countdownBox.classList.add('live');
+                } else if (distance < 0) {
+                    countdownBox.innerHTML = 'Midnight Yell has concluded. See you next game week! 👋';
+                    countdownBox.classList.remove('live');
+                } else {
+                    let timeString = '';
+                    if (days > 0) {
+                        timeString += `${days} days, `;
+                    }
+                    timeString += `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    countdownBox.innerHTML = `NEXT YELL IN: ${timeString}`;
+                    countdownBox.classList.remove('live');
+                }
+            }
+            setInterval(updateCountdown, 1000);
+            updateCountdown();
+
+            // --- ATTENDANCE TRACKER & CALENDAR LINK LOGIC ---
+
+            const ATTENDANCE_KEY_PREFIX = 'aggieAttended_';
+
+            function updateAttendanceDisplay(checkbox) {
+                const traditionSection = checkbox.closest('.tradition-section');
+                const checkmarkSpan = checkbox.nextElementSibling;
+                const calendarBtn = traditionSection.querySelector('.calendar-link-btn');
+
+                if (checkbox.checked) {
+                    traditionSection.classList.add('attended');
+                    checkmarkSpan.textContent = '✓';
+                    if (calendarBtn) calendarBtn.style.display = 'none'; // Hide calendar link if attended
+                } else {
+                    traditionSection.classList.remove('attended');
+                    checkmarkSpan.textContent = '';
+                    if (calendarBtn) calendarBtn.style.display = 'block'; // Show calendar link if not attended
+                }
+            }
+
+            function loadAttendanceStatus() {
+                attendanceCheckboxes.forEach(checkbox => {
+                    const traditionId = checkbox.dataset.tradition;
+                    const isAttended = localStorage.getItem(ATTENDANCE_KEY_PREFIX + traditionId) === 'true';
+                    checkbox.checked = isAttended;
+                    updateAttendanceDisplay(checkbox);
+                });
+            }
+
+            function handleAttendanceChange() {
+                const traditionId = this.dataset.tradition;
+                localStorage.setItem(ATTENDANCE_KEY_PREFIX + traditionId, this.checked);
+                updateAttendanceDisplay(this);
+            }
+
+            attendanceCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', handleAttendanceChange);
+            });
+            
+            calendarLinkButtons.forEach(button => {
+                const traditionId = button.dataset.tradition;
+                const calendarLink = createGoogleCalendarLink(traditionId);
+                button.href = calendarLink;
+            });
+
+            loadAttendanceStatus();
+
+
+            // --- REVEILLE RUN GAME LOGIC ---
+
+            const gameBox = document.getElementById('offline-game-box');
+            const reveille = document.getElementById('reveille');
+            const scoreDisplay = document.getElementById('game-score');
+            const highScoreDisplay = document.getElementById('high-score'); 
+            const statusDisplay = document.getElementById('game-status');
+
+            let isJumping = false;
+            let isGameOver = true;
+            let score = 0;
+            let highScore = 0; 
+            let gameLoop;
+            let obstacleTimer;
+            
+            const REVEILLE_BOTTOM = 3; 
+            const REVEILLE_LEFT = 20; 
+            const REVEILLE_WIDTH = 30;
+            const REVEILLE_HEIGHT = 30;
+            const JUMP_HEIGHT = 80; 
+            const JUMP_DURATION = 500; 
+            const HIGH_SCORE_KEY = 'aggieRunHighScore'; 
+            const OBSTACLE_WIDTH = 15; 
+            const OBSTACLE_HEIGHT = 30;
+
+            function loadHighScore() {
+                const storedScore = localStorage.getItem(HIGH_SCORE_KEY);
+                highScore = storedScore ? parseInt(storedScore) : 0;
+                highScoreDisplay.textContent = highScore.toString().padStart(5, '0');
+            }
+            
+            loadHighScore();
+
+
+            function jump() {
+                if (isJumping || isGameOver) return;
+
+                isJumping = true;
+                reveille.style.bottom = `${REVEILLE_BOTTOM + JUMP_HEIGHT}px`;
+
+                setTimeout(() => {
+                    reveille.style.bottom = `${REVEILLE_BOTTOM}px`;
+                }, JUMP_DURATION - 50); 
+
+                setTimeout(() => {
+                    isJumping = false;
+                }, JUMP_DURATION);
+            }
+
+            function createObstacle() {
+                if (isGameOver) return;
+                
+                const obstacle = document.createElement('div');
+                obstacle.classList.add('obstacle');
+                gameBox.appendChild(obstacle);
+
+                let obstaclePositionLeft = gameBox.clientWidth; 
+                const obstacleSpeed = 5; 
+                
+                const moveObstacle = setInterval(() => {
+                    if (isGameOver) {
+                        clearInterval(moveObstacle);
+                        obstacle.remove();
+                        return;
+                    }
+                    
+                    obstaclePositionLeft -= obstacleSpeed;
+                    obstacle.style.left = obstaclePositionLeft + 'px';
+
+                    const reveilleLeft = REVEILLE_LEFT;
+                    const reveilleRight = REVEILLE_LEFT + REVEILLE_WIDTH;
+                    const reveilleBottomRelative = parseFloat(reveille.style.bottom) || REVEILLE_BOTTOM;
+                    
+                    const obstacleLeft = obstaclePositionLeft;
+                    const obstacleRight = obstaclePositionLeft + OBSTACLE_WIDTH;
+                    
+                    const horizontalOverlap = (reveilleLeft < obstacleRight) && (reveilleRight > obstacleLeft);
+                    const isLowEnough = reveilleBottomRelative <= (REVEILLE_BOTTOM + 5); 
+
+                    if (horizontalOverlap && isLowEnough) {
+                        gameOver();
+                        clearInterval(moveObstacle);
+                        return;
+                    }
+
+                    if (obstaclePositionLeft < -OBSTACLE_WIDTH) { 
+                        clearInterval(moveObstacle);
+                        obstacle.remove();
+                    }
+
+                }, 20); 
+            }
+            
+            function startObstacleGeneration() {
+                 obstacleTimer = setInterval(() => {
+                    createObstacle();
+                }, Math.random() * 2000 + 1000); 
+            }
+
+            function startGameLoop() {
+                gameLoop = setInterval(() => {
+                    if (!isGameOver) {
+                        score += 1;
+                        scoreDisplay.textContent = score.toString().padStart(5, '0');
+                    }
+                }, 100); 
+            }
+
+            function startGame() {
+                clearInterval(gameLoop);
+                clearInterval(obstacleTimer);
+                
+                Array.from(gameBox.getElementsByClassName('obstacle')).forEach(obs => obs.remove());
+
+                isGameOver = false;
+                score = 0;
+                scoreDisplay.textContent = '00000';
+                statusDisplay.style.display = 'none';
+                reveille.style.bottom = `${REVEILLE_BOTTOM}px`; 
+                reveille.style.left = `${REVEILLE_LEFT}px`;
+                
+                startGameLoop();
+                startObstacleGeneration();
+            }
+
+            function gameOver() {
+                isGameOver = true;
+                clearInterval(gameLoop);
+                clearInterval(obstacleTimer);
+                
+                let finalStatusMessage = 'GAME OVER';
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem(HIGH_SCORE_KEY, highScore);
+                    highScoreDisplay.textContent = highScore.toString().padStart(5, '0');
+                    finalStatusMessage = 'NEW HIGH SCORE!';
+                }
+                
+                statusDisplay.innerHTML = `${finalStatusMessage} (Score: ${score.toString().padStart(5, '0')})<small>Click or Press SPACE to restart</small>`;
+                statusDisplay.style.display = 'block';
+            }
+
+            document.addEventListener('keydown', (event) => {
+                if (offlineGameSection.style.display === 'block' && event.code === 'Space') {
+                    event.preventDefault(); 
+                    if (isGameOver) {
+                        startGame();
+                    } else {
+                        jump();
+                    }
+                }
+            });
+
+            gameBox.addEventListener('click', () => {
+                if (offlineGameSection.style.display === 'block') {
+                    if (isGameOver) {
+                        startGame();
+                    } else {
+                        jump();
+                    }
+                }
+            });
+            
+            toggleGameButton.addEventListener('click', function() {
+                const isHidden = offlineGameSection.style.display === 'none' || offlineGameSection.style.display === '';
+                
+                if (isHidden) {
+                    offlineGameSection.style.display = 'block';
+                    toggleGameButton.textContent = 'Hide Game ⬆️';
+                    startGame(); 
+                     window.scrollTo({
+                         top: offlineGameSection.offsetTop - 100,
+                         behavior: 'smooth'
+                     });
+                } else {
+                    offlineGameSection.style.display = 'none';
+                    toggleGameButton.textContent = 'No Whoop? Play Game! 🎮';
+                    gameOver(); 
+                }
+            });
+            
+            gameOver(); 
+        });
+    </script>
+
+</body>
+</html> 

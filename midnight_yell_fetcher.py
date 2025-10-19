@@ -7,6 +7,7 @@ def midnight_yell_fetcher(football_games:list):
         game = football_games[i]
         if(game['Location'] == 'Bryan-College Station (Kyle Field)'):
             dt = game['Datetime'].replace(hour=0, minute=0, second=0, microsecond=0)
-            yell_info = {"Datetime":dt, "Location": "Bryan-College Station (Kyle Field)"}
+            yell_info = {"Datetime":dt, "Location": "Bryan-College Station (Kyle Field)", 
+                         'Title': f'{game['Title']} Midnight Yell', 'Event_Type': 'midnight_yell'}
             midnight_yell_list.append(yell_info)
     return(midnight_yell_list)

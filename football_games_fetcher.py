@@ -59,7 +59,12 @@ def fetch_football_game():
             date_clean = date_clean.replace(short_month,full_months[short_month])
             dt = datetime.strptime(f"{date_clean} {game['Time']} {season_year}", "%B %d %I:%M %p %Y")
             dt = dt.replace(tzinfo=ZoneInfo("America/Chicago"))
+            del game['Date']
+            del game['Time']
             game['Datetime'] = dt
+            game['Event_Type'] = 'football_game'
+            game['Title'] = f'Texas A&M vs. {game['Opponent']}'
+            del game['Opponent']
     return game_list
 
 
