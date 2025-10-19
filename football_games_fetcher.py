@@ -60,7 +60,7 @@ def fetch_football_game():
             dt = datetime.strptime(f"{date_clean} {game['Time']} {season_year}", "%B %d %I:%M %p %Y")
             dt = dt.replace(tzinfo=ZoneInfo("America/Chicago"))
             game['Datetime'] = dt
-        print(game)
+    return game_list
 
 
 
